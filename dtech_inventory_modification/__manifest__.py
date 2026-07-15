@@ -9,7 +9,7 @@
         'security/ir.model.access.csv',
         'security/stock_security.xml',
         'security/product_category_approval_security.xml',
-        'reports/delivery_note.xml',
+        # 'reports/delivery_note.xml',
         'views/product_template_view.xml',
         'views/product_brand_view.xml',
         'data/sequence.xml',
