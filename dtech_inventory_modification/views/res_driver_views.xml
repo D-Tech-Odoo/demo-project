@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_res_driver_form" model="ir.ui.view">
+        <field name="name">res.driver.form</field>
+        <field name="model">res.driver</field>
+        <field name="arch" type="xml">
+            <form string="Driver">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Driver Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Address">
+                            <label for="street1" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="street1" placeholder="Street..." class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2..." class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state" placeholder="State" class="o_address_state"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options="{'no_open': True, 'no_quick_create': True}"/>
+                            </div>
+
+                        </group>
+                        <group string="Contact">
+                            <field name="phone" widget="phone"/>
+                            <field name="mobile" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_res_driver_list" model="ir.ui.view">
+        <field name="name">res.driver.list</field>
+        <field name="model">res.driver</field>
+        <field name="arch" type="xml">
+            <list string="Drivers">
+                <field name="name"/>
+                <field name="complete_address"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_res_driver_search" model="ir.ui.view">
+        <field name="name">res.driver.search</field>
+        <field name="model">res.driver</field>
+        <field name="arch" type="xml">
+            <search string="Search Drivers">
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="mobile"/>
+                <field name="email"/>
+                <field name="country_id"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_res_driver" model="ir.actions.act_window">
+        <field name="name">Drivers</field>
+        <field name="res_model">res.driver</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_res_driver_search"/>
+    </record>
+
+    
+    <menuitem id="menu_res_driver_root"
+              name="Drivers"
+              sequence="10"
+              parent="stock.menu_stock_root"/>
+    
+    <menuitem id="menu_res_driver"
+              name="Drivers"
+              parent="menu_res_driver_root"
+              action="action_res_driver"
+              sequence="10"/>
+
+</odoo>

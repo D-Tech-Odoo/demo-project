@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="dtech_delivery_note_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="report_name" t-value="'DELIVERY NOTE'"/>
+                <t t-call="dtech_report_header_footer.other_custom_header_footer">
+
+                    <div class="page" style="font-family:'Times New Roman', serif; font-size:10pt;">
+                        <style>
+                            table td,
+                            table th {
+                            padding: 5px;
+                            }
+                            table th {
+                            font-weight: bold;
+                            }
+                        </style>
+                        <t t-set="sale_order" t-value="o.sale_id or o.move_ids.sale_line_id.order_id[:1]"/>
+                        <div style="border-bottom:2.5px solid #0072bc; margin-top:0px;"/>
+                        <br/>
+
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td colspan="4" style="text-align:right">
+                                    <strong>DELIVERY ORDER NO:</strong>
+                                    <span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>CUSTOMER NAME</strong>
+                                </td>
+                                <td>
+                                    <span t-field="sale_order.partner_id"/>
+                                </td>
+                                <td>
+                                    <strong>DO DATE</strong>
+                                </td>
+                                <td>
+                                    <span t-field="o.date_done"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>CONTACT DETAILS</strong>
+                                </td>
+                                <td>
+                                    <span t-esc="sale_order.partner_id.phone or ''"/>
+                                    <br/>
+                                    <span t-esc="sale_order.partner_id.mobile or ''"/>
+                                    <br/>
+                                    <span t-esc="sale_order.partner_id.email or ''"/>
+                                </td>
+                                <td><strong>CUSTOMER PO NO</strong>
+                                </td>
+                                <td>
+                                    <span t-esc="sale_order.client_order_ref or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" style="vertical-align:center">
+                                    <strong>DELIVERY ADDRESS</strong>
+                                </td>
+                                <td rowspan="2">
+                                    <!--                                    <span t-field="o.partner_id"-->
+                                    <!--                                        t-options='{"widget":"contact","fields":["address"],"no_marker":True}'/>-->
+                                    <t t-set="delivery_partner"
+                                       t-value="o.partner_id.child_ids.filtered(lambda p: p.type == 'delivery')[:1] or o.partner_id"/>
+
+                                    <t t-if="delivery_partner">
+                                        <span t-esc="delivery_partner.contact_address"/>
+                                    </t>
+                                </td>
+                                <td>
+                                    <strong>CUSTOMER PO DATE</strong>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>PROJECT REFERENCE</strong>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">Please receive the under mention articles in good order and condition
+                                    ;
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>ITEM DESCRIPTION</th>
+                                    <th>SERIAL NO</th>
+                                    <th>UoM</th>
+                                    <th>QUANTITY</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.move_ids_without_package" t-as="line">
+                                    <td>
+                                        <span t-esc="line_index + 1"/>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_id"/>
+                                    </td>
+                                    <td>
+                                        <t t-foreach="line.move_line_ids" t-as="ml">
+                                            <span t-esc="ml.lot_id.name"/>
+                                            <br/>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <span t-field="line.product_uom"/>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        <span t-field="line.quantity"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <p style="margin-bottom:0px;">
+                            <strong>REMARKS ; <span t-field="o.remarks"/></strong>
+                        </p>
+
+
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr style="background:black; color:white;">
+                                <th colspan="2" style="width:50%;">FOR CUSTOMER USE</th>
+                                <th colspan="3" style="width:50%;">FOR OFFICE USE</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Received in good order and condition</td>
+                                <td>Order Prepared By</td>
+                                <td colspan="2">
+                                    <strong>
+                                        <span t-field="sale_order.user_id"/>
+                                    </strong>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td rowspan="2" colspan="2"></td>
+                                <td rowspan="2" colspan="2"></td>
+                                <th>Date</th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span t-field="o.date_done"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">Customer's Office Stamp &amp; Signature</td>
+                                <td>Order Authorized By :</td>
+                                <td colspan="2"></td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <strong>NAME:</strong>
+                                </td>
+                                <td style="width:200px;"></td>
+                                <td rowspan="3" colspan="2" style="vertical-align:top">
+                                    <strong>Signature</strong>
+                                </td>
+                                <th>Date</th>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <strong>NIC NO:</strong>
+                                </td>
+                                <td></td>
+                                <td rowspan="2">
+                                    <span t-field="o.date_done"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>DATE:</strong>
+                                </td>
+                                <td></td>
+                            </tr>
+
+                        </table>
+
+
+                        <table style="width:100%; border-collapse:collapse;">
+                            <tr>
+                                <td>
+                                    <strong>GOODS DELIVERED BY:</strong>
+                                </td>
+                                <td colspan="4" style="width:60%;"></td>
+                            </tr>
+
+                            <tr>
+                                <td style="height: 20px;">
+                                    <strong>SIGNATURE:</strong>
+                                </td>
+                                <td colspan="4"></td>
+                            </tr>
+
+                        </table>
+
+                        <div style="clear:both;"></div>
+
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_delivery_note_pdf" model="ir.actions.report">
+        <field name="name">Delivery Note</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dtech_inventory_modification.dtech_delivery_note_template</field>
+        <field name="report_file">dtech_inventory_modification.dtech_delivery_note_template</field>
+        <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="dtech_sales_modification.invoice_a4"/>
+    </record>
+
+</odoo>

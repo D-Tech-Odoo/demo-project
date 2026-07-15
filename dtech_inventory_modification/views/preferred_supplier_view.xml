@@ -1,0 +1,23 @@
+<odoo>
+    <record id="product_template_only_tree_view_inherit_preferred_supplier" model="ir.ui.view">
+        <field name="name">preferred.supplier.tree.inherit.preferred.supplier</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_tree_view"/>
+        <field name="arch" type="xml">
+          <xpath expr="//field[@name='partner_id']" position="after">
+              <field name="preferred_supplier" optional="hide"/>
+          </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_only_form_view_inherit_preferred_supplier" model="ir.ui.view">
+        <field name="name">preferred.supplier.form.inherit.preferred.supplier</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="preferred_supplier"/>
+            </field>
+        </field>
+    </record>
+</odoo>

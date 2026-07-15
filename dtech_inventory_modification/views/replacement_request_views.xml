@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_replacement_request_tree" model="ir.ui.view">
+        <field name="name">replacement.request.tree</field>
+        <field name="model">replacement.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="replacement_type"/>
+                <field name="approved_by"/>
+                <field name="approval_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_replacement_request_form" model="ir.ui.view">
+        <field name="name">replacement.request.form</field>
+        <field name="model">replacement.request</field>
+        <field name="arch" type="xml">
+            <form>
+
+                <header>
+
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+
+
+                    <button name="action_reset"
+                            string="Reset"
+                            type="object"
+                            invisible="state == 'draft'"/>
+
+                    <button name="action_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="state == 'cancel'"/>
+
+                    <field name="state" widget="statusbar"/>
+
+                </header>
+
+                <sheet>
+                    <div name="button_box">
+                        <button name="action_view_delivery"
+                                string="Delivery"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                invisible="not delivery_id"/>
+                    </div>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="replacement_type"/>
+                            <field name="approved_by" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                        </group>
+
+                        <group>
+                            <field name="reason"/>
+                            <field name="delivery_id" readonly="1"/>
+
+                        </group>
+
+                    </group>
+
+                    <notebook>
+                        <page string="Products">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="original_product_id"/>
+                                    <field name="returned_serial_id"/>
+                                    <field name="original_product_qty"/>
+                                    <field name="original_product_uom" readonly="1"/>
+                                    <field name="replacement_product_id"/>
+                                    <field name="replacement_serial_id"/>
+                                    <field name="replacement_product_qty"/>
+                                    <field name="replacement_product_uom" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_replacement_request" model="ir.actions.act_window">
+        <field name="name">Replacement Requests</field>
+        <field name="res_model">replacement.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <menuitem
+            id="menu_replacement_root"
+            name="Replacement"
+            parent="stock.menu_stock_warehouse_mgmt"
+            sequence="10"/>
+
+    <menuitem
+            id="menu_replacement_request"
+            name="Replacement &amp; Delivery"
+            parent="menu_replacement_root"
+            action="action_replacement_request"
+            sequence="1"/>
+
+</odoo>

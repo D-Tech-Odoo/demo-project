@@ -1,0 +1,21 @@
+<odoo>
+    <record id="cron_min_stock_alert" model="ir.cron">
+        <field name="name">Minimum Stock Alert</field>
+        <field name="model_id" ref="stock.model_stock_warehouse_orderpoint"/>
+        <field name="state">code</field>
+        <field name="code">model.check_minimum_stock_and_notify()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_stock_count_notification" model="ir.cron">
+        <field name="name">Stock Count Notification Reminder</field>
+        <field name="model_id" ref="model_stock_count_notification"/>
+        <field name="state">code</field>
+        <field name="code">model.check_stock_notifications()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">minutes</field>
+    </record>
+</odoo>

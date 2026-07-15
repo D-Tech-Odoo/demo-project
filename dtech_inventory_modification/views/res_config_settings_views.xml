@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_product_category_approval" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.product.category.approval</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Product Category" name="customer_sub_category">
+                    <block title="Approvals">
+                        <setting string="Product Category Creation"
+                                 help="Users with this right can approve or reject product categories directly. Others must submit for approval.">
+                            <field name="group_product_category_approve_advnta"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
