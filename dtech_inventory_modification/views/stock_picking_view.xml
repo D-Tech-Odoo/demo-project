@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="inherit_view_stock_delivery_picking_form" model="ir.ui.view">
+        <field name="name">stock.delivery.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='tracking']" position="after">
+                <field name="awb_no"/>
+                <field name="bl_no"/>
+                <field name="container_no"/>
+                <field name="curier_track_no"/>
+
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form.approval.flow</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <header>
+
+                <button name="action_supplier_dispatch"
+                        type="object"
+                        string="Supplier Dispatch"
+                        class="btn-primary"
+                        invisible="not is_foreign_po or state != 'assigned'"/>
+
+                <button name="action_freight_forwarder"
+                        type="object"
+                        string="Freight Forwarder Handover"
+                        class="btn-primary"
+                        invisible="state != 'supplier_dispatch'"/>
+
+                <button name="action_arrived_port"
+                        type="object"
+                        string="Arrived to Sri Lankan Ports"
+                        class="btn-primary"
+                        invisible="state != 'freight_forwarder'"/>
+
+                <button name="action_customs"
+                        type="object"
+                        string="Customs Clearance"
+                        class="btn-primary"
+                        invisible="state != 'arrived_port'"/>
+
+                <button name="action_warehouse_arrival"
+                        type="object"
+                        string="Warehouse Arrival"
+                        class="btn-primary"
+                        invisible="state != 'customs'"/>
+
+                <button name="action_exceed_po"
+                        type="object"
+                        string="Approved"
+                        class="btn-primary"
+                        invisible="state != 'exceed_po'"/>
+
+                <button name="action_delivered_customer"
+                        type="object"
+                        string="Delivered"
+                        class="btn-primary"
+                        invisible="state != 'done'"/>
+
+
+            </header>
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="picking_type_use_expiration_date" invisible="1"/>
+                <field name="expiry_date"
+                       string="Expiry Date"
+                       widget="date"
+                       invisible="not picking_type_use_expiration_date"/>
+
+                <field name="eta_date"
+                       widget="date"
+                       invisible="not backorder_id"/>
+            </xpath>
+
+            <xpath expr="//button[@name='action_see_returns']" position="after">
+                <button name="action_view_invoices"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        invisible="invoice_count == 0">
+                    <field name="invoice_count"
+                           string="Invoices"
+                           widget="statinfo"/>
+                </button>
+            </xpath>
+
+            <!-- Line-level reason in Operations tab - only shown on return pickings (move has an origin_returned_move_id) -->
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom_qty']" position="after">
+                <field name="line_return_reason"
+                       string="Return Reason"
+                       readonly="1"
+                       optional="show"
+                       column_invisible="not parent.is_return"/>
+
+
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="before">
+                <field name="origin_returned_move_id" column_invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='lot_ids']" position="after">
+                <field name="remark"/>
+            </xpath>
+
+
+            <!-- Common reason in Other Info tab - only shown when a value exists (i.e. it is a return picking) -->
+            <xpath expr="//group[@name='other_infos']" position="inside">
+                <field name="common_return_reason"
+                       readonly="1"
+                       invisible="not common_return_reason"/>
+            </xpath>
+
+
+            <xpath expr="//form/header" position="inside">
+
+                <button name="action_send_to_approve"
+                        type="object"
+                        string="Send To Approve"
+                        class="btn-primary"
+                        invisible="state != 'assigned' or approval_sent or not is_return"/>
+
+                <!-- Send To Approve: visible for Internal Transfers at assigned state -->
+                <button name="action_send_to_approve"
+                        type="object"
+                        string="Send To Approve"
+                        class="btn-primary"
+                        invisible="state != 'assigned' or approval_sent or not is_internal"/>
+
+                <button name="action_print_dn"
+                        type="object"
+                        string="Print Delivery Note"
+                        class="btn-primary"/>
+
+            </xpath>
+
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">state not in ['draft', 'confirmed', 'assigned', 'waiting_approval',
+                    'supplier_dispatch', 'freight_forwarder', 'arrived_port', 'customs', 'warehouse_arrival']
+                </attribute>
+            </xpath>
+
+
+            <!--            <xpath expr="//button[@name='button_validate'][1]" position="attributes">-->
+            <!--                <attribute name="invisible">(state in ['waiting','draft','done','cancel']) or (state == 'assigned' and-->
+            <!--                    is_return and not is_admin) or (state == 'assigned' and is_internal and not is_admin) or (state ==-->
+            <!--                    'waiting_approval' and not is_admin)-->
+            <!--                </attribute>-->
+            <!--            </xpath>-->
+            <xpath expr="//button[@name='button_validate'][1]" position="attributes">
+                <attribute name="invisible">(state in ['waiting','draft','done','cancel','delivered']) or (state == 'assigned' and
+                    is_return and not is_admin) or (state == 'assigned' and is_internal and not is_admin) or (state ==
+                    'waiting_approval' and not (is_admin or exceed_admin)) or (is_foreign_po and state !=
+                    'warehouse_arrival') or (is_exceed and state == 'exceed_po')
+                </attribute>
+            </xpath>
+
+
+            <xpath expr="//button[@name='button_validate'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_admin" invisible="1"/>
+                <field name="is_user" invisible="1"/>
+                <field name="approval_sent" invisible="1"/>
+                <field name="is_return" invisible="1"/>
+                <field name="is_internal" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//notebook/page[@name='extra']" position="after">
+                <page string="Delivery Info" name="deliver_infos">
+                    <group>
+                        <group string="Driver Information">
+                            <field name="driver_id"/>
+                            <field name="driver_no"/>
+                            <field name="carrier"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+
+            <xpath expr="//field[@name='note']" position="after">
+                <group><field name="remarks"/></group>
+            </xpath>
+
+
+
+        </field>
+    </record>
+
+    <!-- Tree / List view -->
+    <record id="view_picking_tree_expiry_date" model="ir.ui.view">
+        <field name="name">stock.picking.tree.expiry.date</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="expiry_date"
+                       string="Expiry Date"
+                       widget="date"
+                       optional="show"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

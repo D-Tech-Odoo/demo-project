@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stock_count_notification_days_tree" model="ir.ui.view">
+        <field name="name">stock.count.notification.days.tree</field>
+        <field name="model">stock.count.notification.days</field>
+        <field name="arch" type="xml">
+            <list string="Stock Count Notification Days">
+                <field name="name"/>
+                <field name="days"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_stock_count_notification_days_form" model="ir.ui.view">
+        <field name="name">stock.count.notification.days.form</field>
+        <field name="model">stock.count.notification.days</field>
+        <field name="arch" type="xml">
+            <form string="Stock Count Notification Day">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="days"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ACTION -->
+    <record id="action_stock_count_notification_days" model="ir.actions.act_window">
+        <field name="name">Stock Count Notification Days</field>
+        <field name="res_model">stock.count.notification.days</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+
+
+    <menuitem id="menu_stock_count_notification_days" name="Stock Count Notification Days" parent="stock.menu_stock_config_settings"
+              action="action_stock_count_notification_days"/>
+
+</odoo>

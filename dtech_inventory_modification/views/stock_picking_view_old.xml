@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="inherit_view_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form.approval.flow</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_see_returns']" position="after">
+                <button name="action_view_invoices"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-pencil-square-o"
+                        invisible="invoice_count == 0">
+                    <field name="invoice_count"
+                           string="Invoices"
+                           widget="statinfo"/>
+                </button>
+            </xpath>
+
+           <!-- Line-level reason in Operations tab - only shown on return pickings (move has an origin_returned_move_id) -->
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_uom_qty']" position="after">
+                <field name="line_return_reason"
+                       string="Return Reason"
+                       readonly="1"
+                       optional="show"
+                       column_invisible="not parent.is_return"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_ids_without_package']//field[@name='product_id']" position="before">
+                <field name="origin_returned_move_id" column_invisible="True"/>
+            </xpath>
+
+
+            <!-- Common reason in Other Info tab - only shown when a value exists (i.e. it is a return picking) -->
+            <xpath expr="//group[@name='other_infos']" position="inside">
+                <field name="common_return_reason"
+                       readonly="1"
+                       invisible="not common_return_reason"/>
+            </xpath>
+
+
+            <xpath expr="//form/header" position="inside">
+
+                <button name="action_send_to_approve"
+                        type="object"
+                        string="Send To Approve"
+                        class="btn-primary"
+                        invisible="state != 'assigned' or approval_sent or not is_return"/>
+
+                <!-- Send To Approve: visible for Internal Transfers at assigned state -->
+                <button name="action_send_to_approve"
+                        type="object"
+                        string="Send To Approve"
+                        class="btn-primary"
+                        invisible="state != 'assigned' or approval_sent or not is_internal"/>
+
+            </xpath>
+
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="invisible">
+                    state not in ('draft','confirmed','assigned','waiting_approval')
+                </attribute>
+            </xpath>
+
+
+            <xpath expr="//button[@name='button_validate'][1]" position="attributes">
+                <attribute name="invisible">(state in ['waiting','draft','done','cancel']) or (state == 'assigned' and
+                    is_return and not is_admin) or (state == 'assigned' and is_internal and not is_admin) or (state == 'confirmed' and is_internal and not is_admin) or (state == 'waiting_approval' and not is_admin)
+                </attribute>
+            </xpath>
+            <xpath expr="//button[@name='button_validate'][2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+
+
+            <xpath expr="//field[@name='partner_id']" position="after">
+
+                <field name="is_admin" invisible="1"/>
+                <field name="is_user" invisible="1"/>
+                <field name="approval_sent" invisible="1"/>
+                <field name="is_return" invisible="1"/>
+                <field name="is_internal" invisible="1"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

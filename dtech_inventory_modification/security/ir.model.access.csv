@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_brand,access.product.brand,model_product_brand,base.group_user,1,1,1,1
+access_stock_count_notification_user,stock.count.notification.user,model_stock_count_notification,stock.group_stock_user,1,1,1,1
+access_stock_count_notification_days,stock.count.notification.days,model_stock_count_notification_days,stock.group_stock_manager,1,1,1,1
+access_product_category_approval_user,product.category.approval.user,product.model_product_category,base.group_user,1,1,1,0
+access_res_driver,res.driver,model_res_driver,base.group_user,1,1,1,1
+access_replacement_request,replacement.request,model_replacement_request,base.group_user,1,1,1,1
+access_replacement_request_line,replacement.request.line,model_replacement_request_line,base.group_user,1,1,1,1
+access_product_category_reject_wizard_user,product.category.reject.wizard.user,model_product_category_reject_wizard,base.group_user,1,1,1,0
