@@ -33,3 +33,4 @@
     'installable': True,
     'application': False,
 }
+# hide dn report
